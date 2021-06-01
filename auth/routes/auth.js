@@ -12,7 +12,7 @@ router.post('/users/create', (req, res) => {
 
 });
 router.get('/users', (req, res) => {
-    throw new Error('Hitted wrong')
+    throw new Error('Hitted Beerey')
 });
 router.put('/users/update-user/:_id', (req, res) => {
     res.send(" Update user")

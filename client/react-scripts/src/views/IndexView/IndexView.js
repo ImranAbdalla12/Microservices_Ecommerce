@@ -9,6 +9,7 @@ import {
   InputAdornment,
   Button,
 } from '@material-ui/core';
+import Ecommerce from "../Ecommerce"
 import { Icon } from 'components/atoms';
 
 const useStyles = makeStyles(theme => ({
@@ -95,22 +96,8 @@ const IndexView = ({ themeMode }) => {
           </Button>
         </div>
         </Section>
-      <Services />
-      <SectionAlternate className={classes.sectionAlternateNoPaddingTop}>
-        <QuickStart />
-      </SectionAlternate>
-      <SectionAlternate>
-        <Features />
-      </SectionAlternate>
-      <Section>
-        <Reviews />
-      </Section>
-      <Section className={classes.dividerSection}>
-        <Divider />
-      </Section>
-      <Section narrow>
-        <GetStarted />
-      </Section>
+        <Ecommerce />
+  
     </div>
   );
 };

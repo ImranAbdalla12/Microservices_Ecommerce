@@ -7,7 +7,6 @@ import {
   FeaturedProducts,
   Hero,
   LatestProducts,
-  News,
   Newsletter,
   Overview,
   Products,
@@ -20,7 +19,6 @@ import {
   categories,
   featuredProducts,
   mostSoldProducts,
-  news,
   latestProducts,
   reviews,
 } from './data';
@@ -71,9 +69,7 @@ const Ecommerce = () => {
       <SectionAlternate>
         <Sales data={mostSoldProducts} />
       </SectionAlternate>
-      <Section>
-        <News data={news} />
-      </Section>
+    
       <Section className={classes.sectionNoPaddingTop}>
         <LatestProducts data={latestProducts} />
       </Section>

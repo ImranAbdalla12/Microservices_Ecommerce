@@ -1,104 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useFormik } from 'formik';
+import { authFirbase } from 'Firbase';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Grid, Button, TextField } from '@material-ui/core';
-import validate from 'validate.js';
-import { LearnMoreLink } from 'components/atoms';
-
+import { Section } from 'components/organisms';
+import {} from 'redux/actions/authActions';
+import { useHistory } from 'react-router-dom';
+import Validations from './Validations';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
   },
 }));
 
-const schema = {
-  email: {
-    presence: { allowEmpty: false, message: 'is required' },
-    email: true,
-    length: {
-      maximum: 300,
-    },
-  },
-  firstName: {
-    presence: { allowEmpty: false, message: 'is required' },
-    length: {
-      maximum: 120,
-    },
-  },
-  lastName: {
-    presence: { allowEmpty: false, message: 'is required' },
-    length: {
-      maximum: 120,
-    },
-  },
-  password: {
-    presence: { allowEmpty: false, message: 'is required' },
-    length: {
-      minimum: 8,
-    },
-  },
-};
-
 const Form = () => {
   const classes = useStyles();
+  let history = useHistory();
+  let dispatch = useDispatch();
+  const [Loading, setLoading] = useState(false);
 
-  const [formState, setFormState] = React.useState({
-    isValid: false,
-    values: {},
-    touched: {},
-    errors: {},
+
+  const registerCompleteHandle = () => {
+
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      email: window.localStorage.getItem('emailForRegistration'),
+      firstName: 'Imran',
+      lastName: 'Abdullah',
+      password: '12345678',
+      verifyPassword: '12345678',
+    },
+    validationSchema: Validations,
+    onSubmit: async values => {
+      setLoading(true);
+      await registerCompleteHandle(values);
+    },
   });
-
-  React.useEffect(() => {
-    const errors = validate(formState.values, schema);
-
-    setFormState(formState => ({
-      ...formState,
-      isValid: errors ? false : true,
-      errors: errors || {},
-    }));
-  }, [formState.values]);
-
-  const handleChange = event => {
-    event.persist();
-
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        [event.target.name]:
-          event.target.type === 'checkbox'
-            ? event.target.checked
-            : event.target.value,
-      },
-      touched: {
-        ...formState.touched,
-        [event.target.name]: true,
-      },
-    }));
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    if (formState.isValid) {
-      window.location.replace('/');
-    }
-
-    setFormState(formState => ({
-      ...formState,
-      touched: {
-        ...formState.touched,
-        ...formState.errors,
-      },
-    }));
-  };
-
-  const hasError = field =>
-    formState.touched[field] && formState.errors[field] ? true : false;
 
   return (
     <div className={classes.root}>
-      <form name="password-reset-form" method="post" onSubmit={handleSubmit}>
+      <form
+        name="password-reset-form"
+        method="post"
+        onSubmit={formik.handleSubmit}
+      >
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <TextField
@@ -107,14 +55,16 @@ const Form = () => {
               variant="outlined"
               size="medium"
               name="firstName"
+              variant="outlined"
               fullWidth
-              helperText={
-                hasError('firstName') ? formState.errors.firstName[0] : null
+              id="firstName"
+              autoFocus
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
               }
-              error={hasError('firstName')}
-              onChange={handleChange}
-              type="firstName"
-              value={formState.values.firstName || ''}
+              helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
           <Grid item xs={6}>
@@ -124,14 +74,13 @@ const Form = () => {
               variant="outlined"
               size="medium"
               name="lastName"
-              fullWidth
-              helperText={
-                hasError('lastName') ? formState.errors.lastName[0] : null
-              }
-              error={hasError('lastName')}
-              onChange={handleChange}
-              type="lastName"
-              value={formState.values.lastName || ''}
+                autoComplete="lname"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.lastName && Boolean(formik.errors.lastName)
+                }
+                helperText={formik.touched.lastName && formik.errors.lastName}
             />
           </Grid>
           <Grid item xs={12}>
@@ -139,14 +88,13 @@ const Form = () => {
               placeholder="E-mail"
               label="E-mail *"
               variant="outlined"
+              type = 'email'
+              fullWidth
               size="medium"
               name="email"
-              fullWidth
-              helperText={hasError('email') ? formState.errors.email[0] : null}
-              error={hasError('email')}
-              onChange={handleChange}
-              type="email"
-              value={formState.values.email || ''}
+                autoComplete="email"
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
             />
           </Grid>
           <Grid item xs={12}>
@@ -155,17 +103,37 @@ const Form = () => {
               label="Password *"
               variant="outlined"
               size="medium"
+              type = 'password'
               name="password"
               fullWidth
-              helperText={
-                hasError('password') ? formState.errors.password[0] : null
-              }
-              error={hasError('password')}
-              onChange={handleChange}
-              type="password"
-              value={formState.values.password || ''}
+              value={formik.values.password}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={formik.touched.password && formik.errors.password}
             />
           </Grid>
+          <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                name="verifyPassword"
+                label="Verify Password"
+                type="password"
+                id="verifyPassword"
+                autoComplete="verify-password"
+                value={formik.values.verifyPassword}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.verifyPassword &&
+                  Boolean(formik.errors.verifyPassword)
+                }
+                helperText={
+                  formik.touched.verifyPassword && formik.errors.verifyPassword
+                }
+              />
+            </Grid>
           <Grid item xs={12}>
             <i>
               <Typography variant="subtitle2">
@@ -183,16 +151,6 @@ const Form = () => {
             >
               Send
             </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography
-              variant="subtitle1"
-              color="textSecondary"
-              align="center"
-            >
-              Already have an account?{' '}
-              <LearnMoreLink title="Sign in" href="/signin-simple" />
-            </Typography>
           </Grid>
         </Grid>
       </form>

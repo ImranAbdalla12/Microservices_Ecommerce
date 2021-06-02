@@ -6,7 +6,8 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 import LinearDeterminate from './views/Loading/Loading';
 //Using Lazy Load
 const IndexView = React.lazy(() => import('./views/IndexView'));
-const Register = React.lazy(() => import('./views/SignupSimple'));
+const signUp = React.lazy(() => import('./views/SignupSimple'));
+const register = React.lazy(() => import('./views/Register'));
 const NotFound = React.lazy(() => import('./views/NotFound'));
 const Login = React.lazy(() => import('./views/SigninSimple'));
 const Account = React.lazy(() => import('./views/Account'));
@@ -36,11 +37,22 @@ const Routes = () => {
         />
         <Route
           exact
+          path="/signUp"
+          render={matchProps => (
+            <WithLayout
+              {...matchProps}
+              component={signUp}
+              layout={MainLayout}
+            />
+          )}
+        />
+         <Route
+          exact
           path="/register"
           render={matchProps => (
             <WithLayout
               {...matchProps}
-              component={Register}
+              component={register}
               layout={MainLayout}
             />
           )}

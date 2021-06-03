@@ -9,8 +9,13 @@ const {erroHandler} = require("./middlewares/error-handler")
 //Load Config 
 dotenv.config({ path: './config/config.env' });
 
-//db connecnt 
-connectDB();
+//db connecnt
+try {
+    connectDB();
+} catch (error) {
+    throw new Error(error)
+} 
+
 
 const app = express()
 app.use(express.json())

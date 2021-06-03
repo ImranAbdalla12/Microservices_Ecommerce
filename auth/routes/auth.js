@@ -3,24 +3,15 @@ const express = require('express');
 const router = express.Router();
 
 // middlewares
+const {authCheck} = require("../middlewares/auth-middleware")
 
-const {erroHandler} = require('../middlewares/error-handler')
 // controllers
+const {createOrUpdateUser, currentUser, deleteUser, createOrUpdateUserProfile, loadUsers} = require("../controllers/authController")
 
-router.post('/users/create', (req, res) => {
-    res.send(" Create user")
-
-});
-router.get('/users', (req, res) => {
-    throw new Error('Hitted Beerey')
-});
-router.put('/users/update-user/:_id', (req, res) => {
-    res.send(" Update user")
-});
-router.post('/users/current-user', (req, res) => {
-    res.send(" Current user")
-});
-router.delete('/users/delete-user/:_id', (req, res) => {
-    res.send(" Delete user")
-});
+router.post('/users/create', authCheck, createOrUpdateUser)
+router.get('/users', authCheck, loadUsers)
+router.put('/users/update-user/:_id', authCheck, createOrUpdateUser)
+router.post('/users/current-user', authCheck, currentUser )
+router.delete('/users/delete-user/:_id', authCheck, deleteUser )
+router.post('/current-user/profile', authCheck, createOrUpdateUserProfile);
 module.exports = router;

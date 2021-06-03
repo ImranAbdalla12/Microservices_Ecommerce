@@ -1,6 +1,8 @@
-exports.erroHandler = (err, req, res, next) => {
-console.log("Something went Wrong")
-res.status(400).send({
-message: err.message
+exports.erroHandler = (error, req, res, next) => {
+res.status(error.status || 500)
+res.json({
+    error: {
+         message: error.message
+    }
 })
 }

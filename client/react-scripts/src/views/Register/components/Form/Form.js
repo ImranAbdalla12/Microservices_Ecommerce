@@ -74,7 +74,7 @@ const Form = () => {
 
   return (
     <div className={classes.root}>
-       <Section>
+   
           {Message && (
             <Section className={classes.section}>
               <Alert severity="success">{Message}</Alert>
@@ -85,7 +85,7 @@ const Form = () => {
               <Alert severity="error">{ErrorMessage}</Alert>
             </Section>
           )}
-        </Section>
+     
       <form name="email-register-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>

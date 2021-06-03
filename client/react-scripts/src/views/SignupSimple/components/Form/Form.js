@@ -4,6 +4,8 @@ import { useFormik } from 'formik';
 import { authFirbase } from 'Firbase';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Grid, Button, TextField } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import {createOrUpdateUser} from 'redux/actions/authActions'
 import { Section } from 'components/organisms';
 import {} from 'redux/actions/authActions';
 import { useHistory } from 'react-router-dom';
@@ -19,11 +21,64 @@ const Form = () => {
   let history = useHistory();
   let dispatch = useDispatch();
   const [Loading, setLoading] = useState(false);
+  const [Message, setMessage] = useState();
+  const [ErrorMessage, setErrorMessage] = useState();
 
 
-  const registerCompleteHandle = () => {
+  const roleBasedRedirect = res => {
+    if (res.data.role === 'admin') {
+      history.push('/admin/dashboard');
+    } else {
+      history.push('/user/history');
+    }
+  };
+const registerCompleteHandle = async values => {
+    const { email, password } = values;
+    try {
+      dispatch({ type: ' AUTH_START', loading: true });
+      const result = await authFirbase.signInWithEmailLink(
+        email,
+        window.location.href,
+      );
+      if (result.user.emailVerified) {
+        window.localStorage.removeItem('emailForRegistration');
 
-  }
+        let user = authFirbase.currentUser;
+        await user.updatePassword(password);
+        const authtoken = await user.getIdTokenResult();
+        createOrUpdateUser(authtoken)
+          .then(res => {
+            dispatch({
+              type: 'AUTH_SUCCESS',
+              loading: false,
+              payload: {
+                name: res.data.name,
+                email: res.data.email,
+                token: authtoken.authtoken,
+                role: res.data.role,
+                _id: res.data._id,
+              },
+            });
+            roleBasedRedirect(res);
+            dispatch({ type: 'AUTH_END ', loading: false });
+          })
+          .catch(err => {
+            dispatch({
+              type: 'AUTH_FAIL',
+              loading: false,
+              payload: null,
+            });
+            console.log(err);
+            setLoading(false);
+            setErrorMessage(err.message)
+          });
+      }
+    } catch (error) {
+      console.log(error);
+      setErrorMessage(error.message)
+      setLoading(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -42,6 +97,16 @@ const Form = () => {
 
   return (
     <div className={classes.root}>
+          {Message && (
+            <Section className={classes.section}>
+              <Alert severity="success">{Message}</Alert>
+            </Section>
+          )}
+          {ErrorMessage && (
+            <Section className={classes.section}>
+              <Alert severity="error">{ErrorMessage}</Alert>
+            </Section>
+          )}
       <form
         name="password-reset-form"
         method="post"
@@ -85,13 +150,13 @@ const Form = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              placeholder="E-mail"
-              label="E-mail *"
               variant="outlined"
               type = 'email'
               fullWidth
               size="medium"
+              disabled
               name="email"
+              value={formik.values.email}
                 autoComplete="email"
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
@@ -148,8 +213,9 @@ const Form = () => {
               type="submit"
               color="primary"
               fullWidth
+              disabled={Loading}
             >
-              Send
+              Sign Up
             </Button>
           </Grid>
         </Grid>

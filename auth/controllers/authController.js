@@ -1,6 +1,6 @@
 const User = require('../authModel');
 
-exports.createOrUpdateUser = async (req, res) => {
+exports.createOrUpdateUser = async (req, res, next) => {
     try {
         const { name, picture, email } = req.user;
 
@@ -23,31 +23,48 @@ exports.createOrUpdateUser = async (req, res) => {
   }
         
     } catch (error) {
-        console.log(error)
-        throw new Error(error)
+      const newError = new Error(error)
+      next(newError)
     }
   
 };
-exports.currentUser = async (req, res) => {
-  User.findOne({ email: req.user.email }).exec((err, user) => {
-    if (err) throw new Error(err);
-    res.json(user);
-  });
+exports.currentUser = async (req, res, next) => {
+  try {
+    User.findOne({ email: req.user.email }).exec((err, user) => {
+      if (err) throw new Error(err);
+      res.json(user);
+    });
+    
+  } catch (error) {
+    const newError = new Error(error)
+    next(newError)
+  }
+ 
 };
 
-exports.deleteUser = async (req, res) => {
+exports.loadUsers = async (req, res, next) => {
+  User.find().sort({ createdAt: -1 }).exec((err, users) => {
+    if (err) {
+      const newError = new Error(err)
+      next(newError)
+    };
+    res.json(users);
+  });
+};
+exports.deleteUser = async (req, res, next) => {
   try {
     const deleted = await User.findOneAndDelete({ _id: req.params._id });
     res.json(
       `Deleted Successfully!! We're sorry to see you leave Mr.  ${deleted.name}!`
     );
-  } catch (err) {
-    console.log(err);
-    throw new Error (err)
+  } catch (error) {
+    const newError = new Error(error)
+    newError.status(404)
+    next(newError)
   }
 };
 
-exports.createOrUpdateUserProfile = async (req, res) => {
+exports.createOrUpdateUserProfile = async (req, res, next) => {
   const { fullName, country, city, address, phone, birthdate } = req.body.e;
   const { email, picture } = req.user;
   try {
@@ -61,7 +78,8 @@ exports.createOrUpdateUserProfile = async (req, res) => {
       res.json(user);
     }
   } catch (error) {
-      throw new Error (error)
+    const newError = new Error(error)
+    next(newError)
   }
   
 };

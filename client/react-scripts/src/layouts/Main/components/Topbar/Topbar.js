@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { useStyles } from './Style';
 import {
   Toolbar,
@@ -18,11 +18,14 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MenuIcon from '@material-ui/icons/Menu';
 import { Image, DarkModeToggler } from 'components/atoms';
 
-
-
-const Topbar = ({ themeMode, themeToggler, onSidebarOpen, pages, className, ...rest }) => {
- 
-
+const Topbar = ({
+  themeMode,
+  themeToggler,
+  onSidebarOpen,
+  pages,
+  className,
+  ...rest
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openedPopoverId, setOpenedPopoverId] = useState(null);
 
@@ -88,7 +91,6 @@ const Topbar = ({ themeMode, themeToggler, onSidebarOpen, pages, className, ...r
           variant="body1"
           className={clsx(classes.navLink, 'submenu-item')}
           color="textSecondary"
-         
         >
           {item.pages[0].title}
         </Typography>
@@ -123,12 +125,11 @@ const Topbar = ({ themeMode, themeToggler, onSidebarOpen, pages, className, ...r
     return (
       <div className={classes.menu}>
         <div className={classes.menuItem}>
+          <div>
+            <MenuGroup item={signup} />
+            <MenuGroup item={signin} />
+          </div>
 
-            <div>
-              <MenuGroup item={signup} />
-              <MenuGroup item={signin} />
-            </div>
-        
           {/* {user != null && <ButtonLogOut item={logout} />} */}
           {}
         </div>
@@ -138,7 +139,6 @@ const Topbar = ({ themeMode, themeToggler, onSidebarOpen, pages, className, ...r
       </div>
     );
   };
-
 
   const renderPages = id => {
     if (id === 'products') {
@@ -158,7 +158,11 @@ const Topbar = ({ themeMode, themeToggler, onSidebarOpen, pages, className, ...r
         <a href="/" title="thefront">
           <Image
             className={classes.logoImage}
-            src={themeMode === 'light' ? 'https://assets.maccarianagency.com/the-front/logos/logo.svg' : 'https://assets.maccarianagency.com/the-front/logos/logo-negative.svg'}
+            src={
+              themeMode === 'light'
+                ? 'https://assets.maccarianagency.com/the-front/logos/logo.svg'
+                : 'https://assets.maccarianagency.com/the-front/logos/logo-negative.svg'
+            }
             alt="thefront"
             lazy={false}
           />
@@ -213,10 +217,14 @@ const Topbar = ({ themeMode, themeToggler, onSidebarOpen, pages, className, ...r
               </Popover>
             </div>
           ))}
-          <ListItem className={clsx(classes.listItem, 'menu-item--no-dropdown')}>
-            <DarkModeToggler themeMode={themeMode} onClick={() => themeToggler()} />
+          <ListItem
+            className={clsx(classes.listItem, 'menu-item--no-dropdown')}
+          >
+            <DarkModeToggler
+              themeMode={themeMode}
+              onClick={() => themeToggler()}
+            />
           </ListItem>
-         
         </List>
       </Hidden>
       <Hidden mdUp>

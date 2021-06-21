@@ -10,13 +10,11 @@ import {
   Typography,
   ListItemIcon,
   Divider,
-
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-  },
+  root: {},
   listItem: {
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -145,13 +143,12 @@ const SidebarNav = props => {
           <MenuGroup item={settings} />
         </div>
         <div className={classes.menuItem}>
-       
-            <div>
-              <MenuGroup item={signup} />
-              <MenuGroup item={signin} />
-            </div>
-        
-           <ButtonLogOut item={logout} />
+          <div>
+            <MenuGroup item={signup} />
+            <MenuGroup item={signin} />
+          </div>
+
+          <ButtonLogOut item={logout} />
         </div>
       </div>
     );

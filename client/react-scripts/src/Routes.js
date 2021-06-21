@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import WithLayout from 'WithLayout';
@@ -14,6 +13,7 @@ const Account = React.lazy(() => import('./views/Account'));
 const PasswordRest = React.lazy(() => import('./views/PasswordResetSimple'));
 const About = React.lazy(() => import('./views/AboutSideCover'));
 const Contact = React.lazy(() => import('./views/ContactPageCover'));
+// const Shop = React.lazy(() => import('./views/shop'));
 const Routes = () => {
   return (
     <React.Suspense
@@ -46,7 +46,14 @@ const Routes = () => {
             />
           )}
         />
-         <Route
+        {/* <Route
+          exact
+          path="/shop"
+          render={matchProps => (
+            <WithLayout {...matchProps} component={Shop} layout={MainLayout} />
+          )}
+        /> */}
+        <Route
           exact
           path="/register"
           render={matchProps => (

@@ -1,31 +1,29 @@
-const express = require('express')
-const { readdirSync } = require('fs');
-const cors = require('cors');
-const morgan = require('morgan');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const {erroHandler} = require("./middlewares/error-handler")
+const express = require("express");
+const { readdirSync } = require("fs");
+const cors = require("cors");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const { erroHandler } = require("./middlewares/error-handler");
 
-//Load Config 
-dotenv.config({ path: './config/config.env' });
+//Load Config
+dotenv.config({ path: "./config/config.env" });
 
 //db connecnt
 try {
-    connectDB();
+  connectDB();
 } catch (error) {
-    throw new Error(error)
-} 
+  throw new Error(error);
+}
 
-
-const app = express()
-app.use(express.json())
-app.use(morgan('dev'));
+const app = express();
+app.use(express.json());
+app.use(morgan("dev"));
 app.use(cors());
+readdirSync("./routes").map((r) => app.use("/api", require("./routes/" + r)));
+app.use(erroHandler);
 
-readdirSync('./routes').map((r) => app.use('/api', require('./routes/' + r)));
-app.use(erroHandler)
-
-const PORT = 3000
+const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server Listening on post ${PORT}`)
-})
+  console.log(`Server Listening on port ${PORT}`);
+});

@@ -1,32 +1,31 @@
-const User = require('../authModel');
-
+const User = require("../authModel");
+const { UserCreatedPublisher, newConnection } = require("nats-ecom-streaming");
 exports.createOrUpdateUser = async (req, res, next) => {
-    try {
-        const { name, picture, email } = req.user;
+  try {
+    const { name, picture, email } = req.user;
 
-  const user = await User.findOneAndUpdate(
-    { email },
-    { name: email.split('@')[0], picture },
-    { new: true }
-  );
-  if (user) {
-    console.log('USER UPDATED', user);
-    res.json(user);
-  } else {
-    const newUser = await new User({
-      email,
-      name: email.split('@')[0],
-      picture,
-    }).save();
-    console.log('USER CREATED', newUser);
-    res.json(newUser);
-  }
-        
-    } catch (error) {
-      const newError = new Error(error)
-      next(newError)
+    const user = await User.findOneAndUpdate(
+      { email },
+      { name: email.split("@")[0], picture },
+      { new: true }
+    );
+    if (user) {
+      console.log("USER UPDATED", user);
+      res.json(user);
+    } else {
+      const newUser = await new User({
+        email,
+        name: email.split("@")[0],
+        picture,
+      }).save();
+      console.log("USER CREATED", newUser);
+      new UserCreatedPublisher(newConnection.client).publish(newUser);
+      res.json(newUser);
     }
-  
+  } catch (error) {
+    const newError = new Error(error);
+    next(newError);
+  }
 };
 exports.currentUser = async (req, res, next) => {
   try {
@@ -34,22 +33,22 @@ exports.currentUser = async (req, res, next) => {
       if (err) throw new Error(err);
       res.json(user);
     });
-    
   } catch (error) {
-    const newError = new Error(error)
-    next(newError)
+    const newError = new Error(error);
+    next(newError);
   }
- 
 };
 
 exports.loadUsers = async (req, res, next) => {
-  User.find().sort({ createdAt: -1 }).exec((err, users) => {
-    if (err) {
-      const newError = new Error(err)
-      next(newError)
-    };
-    res.json(users);
-  });
+  User.find()
+    .sort({ createdAt: -1 })
+    .exec((err, users) => {
+      if (err) {
+        const newError = new Error(err);
+        next(newError);
+      }
+      res.json(users);
+    });
 };
 exports.deleteUser = async (req, res, next) => {
   try {
@@ -58,9 +57,9 @@ exports.deleteUser = async (req, res, next) => {
       `Deleted Successfully!! We're sorry to see you leave Mr.  ${deleted.name}!`
     );
   } catch (error) {
-    const newError = new Error(error)
-    newError.status(404)
-    next(newError)
+    const newError = new Error(error);
+    newError.status(404);
+    next(newError);
   }
 };
 
@@ -74,12 +73,11 @@ exports.createOrUpdateUserProfile = async (req, res, next) => {
       { new: true }
     );
     if (user) {
-      console.log('USER PROFILE UPDATED', user);
+      console.log("USER PROFILE UPDATED", user);
       res.json(user);
     }
   } catch (error) {
-    const newError = new Error(error)
-    next(newError)
+    const newError = new Error(error);
+    next(newError);
   }
-  
 };

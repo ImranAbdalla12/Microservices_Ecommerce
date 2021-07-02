@@ -1,9 +1,29 @@
-import { map } from 'lodash';
-import { createSlice } from '@reduxjs/toolkit';
+import { map } from "lodash";
+import { createSlice } from "@reduxjs/toolkit";
 // utils
-import axios from '../../utils/axios';
+import axios from "../../utils/axios";
 
 // ----------------------------------------------------------------------
+export const authReducer = (state = null, { type, payload, loading }) => {
+  switch (type) {
+    case "LOGGED_IN_USER":
+      return payload;
+
+    case "CLEAN_UP": {
+      return payload;
+    }
+
+    case "AUTH_FAIL":
+      return payload;
+
+    case "AUTH_SUCCESS":
+      return payload;
+    case "USER_PROFILE_UPDATE":
+      return payload;
+    default:
+      return state;
+  }
+};
 
 const initialState = {
   isLoading: false,
@@ -18,11 +38,11 @@ const initialState = {
   cards: null,
   addressBook: [],
   invoices: [],
-  notifications: null
+  notifications: null,
 };
 
 const slice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     // START LOADING
@@ -68,7 +88,7 @@ const slice = createSlice({
         if (follower.id === followerId) {
           return {
             ...follower,
-            isFollowed: !follower.isFollowed
+            isFollowed: !follower.isFollowed,
           };
         }
         return follower;
@@ -117,8 +137,8 @@ const slice = createSlice({
     getNotificationsSuccess(state, action) {
       state.isLoading = false;
       state.notifications = action.payload;
-    }
-  }
+    },
+  },
 });
 
 // Reducer
@@ -133,7 +153,7 @@ export function getProfile() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/profile');
+      const response = await axios.get("/api/user/profile");
       dispatch(slice.actions.getProfileSuccess(response.data.profile));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -147,7 +167,7 @@ export function getPosts() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/posts');
+      const response = await axios.get("/api/user/posts");
       dispatch(slice.actions.getPostsSuccess(response.data.posts));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -161,7 +181,7 @@ export function getFollowers() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/social/followers');
+      const response = await axios.get("/api/user/social/followers");
       dispatch(slice.actions.getFollowersSuccess(response.data.followers));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -175,7 +195,7 @@ export function getFriends() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/social/friends');
+      const response = await axios.get("/api/user/social/friends");
       dispatch(slice.actions.getFriendsSuccess(response.data.friends));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -189,7 +209,7 @@ export function getGallery() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/social/gallery');
+      const response = await axios.get("/api/user/social/gallery");
       dispatch(slice.actions.getGallerySuccess(response.data.gallery));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -203,7 +223,7 @@ export function getUserList() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/manage-users');
+      const response = await axios.get("/api/user/manage-users");
       dispatch(slice.actions.getUserListSuccess(response.data.users));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -217,7 +237,7 @@ export function getCards() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/account/cards');
+      const response = await axios.get("/api/user/account/cards");
       dispatch(slice.actions.getCardsSuccess(response.data.cards));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -231,7 +251,7 @@ export function getAddressBook() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/account/address-book');
+      const response = await axios.get("/api/user/account/address-book");
       dispatch(slice.actions.getAddressBookSuccess(response.data.addressBook));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -245,7 +265,7 @@ export function getInvoices() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/account/invoices');
+      const response = await axios.get("/api/user/account/invoices");
       dispatch(slice.actions.getInvoicesSuccess(response.data.invoices));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -260,7 +280,7 @@ export function getNotifications() {
     dispatch(slice.actions.startLoading());
     try {
       const response = await axios.get(
-        '/api/user/account/notifications-settings'
+        "/api/user/account/notifications-settings"
       );
       dispatch(
         slice.actions.getNotificationsSuccess(response.data.notifications)
@@ -277,7 +297,7 @@ export function getUsers() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/all');
+      const response = await axios.get("/api/user/all");
       dispatch(slice.actions.getUsersSuccess(response.data.users));
     } catch (error) {
       dispatch(slice.actions.hasError(error));

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { REACT_APP_API } from "../requestsUrl";
 // New user Registration or Update
 const createOrUpdateUser = async (authtoken) => {
   const headers = {
@@ -6,7 +7,7 @@ const createOrUpdateUser = async (authtoken) => {
     Authorization: authtoken.token,
   };
   return await axios.post(
-    `${process.env.REACT_APP_API}/create-user/`,
+    `${REACT_APP_API}/users/create`,
     {},
     {
       headers: headers,
@@ -20,7 +21,7 @@ const currentUser = async (authtoken) => {
     Authorization: authtoken.token,
   };
   return await axios.post(
-    `${process.env.REACT_APP_API}/current-user`,
+    `${REACT_APP_API}/current-user`,
     {},
     {
       headers: headers,
@@ -29,7 +30,7 @@ const currentUser = async (authtoken) => {
 };
 
 const deleteUser = async (_id) => {
-  return await axios.delete(`${process.env.REACT_APP_API}/delete-user/${_id}`);
+  return await axios.delete(`${REACT_APP_API}/delete-user/${_id}`);
 };
 
 const createOrUpdateUserProfile = async (authtoken, e) => {
@@ -38,7 +39,7 @@ const createOrUpdateUserProfile = async (authtoken, e) => {
     Authorization: authtoken,
   };
   return await axios.post(
-    `${process.env.REACT_APP_API}/current-user/profile`,
+    `${REACT_APP_API}/current-user/profile`,
     { e },
     {
       headers: headers,

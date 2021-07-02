@@ -71,6 +71,14 @@ export default function RegisterForm() {
                 _id: res.data._id,
               },
             });
+            enqueueSnackbar("Registration success", {
+              variant: "success",
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              ),
+            });
             roleBasedRedirect(res);
             dispatch({ type: "AUTH_END ", loading: false });
           })
@@ -80,11 +88,27 @@ export default function RegisterForm() {
               loading: false,
               payload: null,
             });
+            enqueueSnackbar(`Registration Failed ${err.message}`, {
+              variant: "error",
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              ),
+            });
             console.log(err);
           });
       }
     } catch (error) {
       console.log(error);
+      enqueueSnackbar(`Registration Failed ${error.message}`, {
+        variant: "error",
+        action: (key) => (
+          <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Icon icon={closeFill} />
+          </MIconButton>
+        ),
+      });
     }
   };
 
@@ -107,26 +131,13 @@ export default function RegisterForm() {
     initialValues: {
       firstName: "",
       lastName: "",
-      email: "",
+      email: window.localStorage.getItem("emailForRegistration"),
       password: "",
     },
     validationSchema: RegisterSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
-        await register({
-          email: values.email,
-          password: values.password,
-          firstName: values.firstName,
-          lastName: values.lastName,
-        });
-        enqueueSnackbar("Login success", {
-          variant: "success",
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          ),
-        });
+        await registerCompleteHandle(values);
         if (isMountedRef.current) {
           setSubmitting(false);
         }
@@ -171,6 +182,7 @@ export default function RegisterForm() {
           autoComplete="username"
           name="email"
           type="email"
+          disabled
           label="Email address"
           {...getFieldProps("email")}
           error={

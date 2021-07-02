@@ -1,5 +1,6 @@
 const User = require("../authModel");
-const { UserCreatedPublisher, newConnection } = require("nats-ecom-streaming");
+const userCreatedPublisher = require("../events/userCreatedPublisher");
+const { subjects } = require("nats-ecom-streaming");
 exports.createOrUpdateUser = async (req, res, next) => {
   try {
     const { name, picture, email } = req.user;
@@ -11,6 +12,9 @@ exports.createOrUpdateUser = async (req, res, next) => {
     );
     if (user) {
       console.log("USER UPDATED", user);
+      new userCreatedPublisher(subjects.userCreated).publish(
+        JSON.stringify(user)
+      );
       res.json(user);
     } else {
       const newUser = await new User({
@@ -19,7 +23,7 @@ exports.createOrUpdateUser = async (req, res, next) => {
         picture,
       }).save();
       console.log("USER CREATED", newUser);
-      new UserCreatedPublisher(newConnection.client).publish(newUser);
+
       res.json(newUser);
     }
   } catch (error) {

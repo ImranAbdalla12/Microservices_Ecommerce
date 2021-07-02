@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - name: product
+        image: imran6099/product
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-srv
+spec:
+  selector:
+    app: product
+  ports: 
+    - name: product
+      protocol: TCP
+      port: 3001
+      targetPort: 3001
+

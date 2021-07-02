@@ -38,13 +38,14 @@ const productSchema = new mongoose.Schema(
         ref: "Sub",
       },
     ],
-    quantity: Number,
+    quantity: { type: Number, required: true },
     sold: {
       type: Number,
       default: 0,
     },
     images: {
       type: Array,
+      required: true,
     },
     shipping: {
       type: String,
@@ -56,7 +57,6 @@ const productSchema = new mongoose.Schema(
     },
     brand: {
       type: String,
-      enum: ["Apple", "Samsung", "Microsoft", "Lenovo", "ASUS"],
     },
     ratings: [
       {

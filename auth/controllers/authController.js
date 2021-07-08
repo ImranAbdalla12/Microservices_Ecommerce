@@ -1,4 +1,4 @@
-const User = require("../authModel");
+const User = require("../models/authModel");
 const userCreatedPublisher = require("../events/userCreatedPublisher");
 const { subjects } = require("nats-ecom-streaming");
 exports.createOrUpdateUser = async (req, res, next) => {

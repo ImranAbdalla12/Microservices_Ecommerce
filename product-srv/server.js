@@ -5,10 +5,11 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const { erroHandler } = require("./middlewares/errorhandling");
-
+const UserCreatedListener = require("./events/productListener");
 //Load Config
 dotenv.config({ path: "./config/config.env" });
 
+new UserCreatedListener("user:created", "user-srv").listen();
 //db connecnt
 connectDB();
 const app = express();

@@ -19,3 +19,4 @@ router.put("/product/:slug", update);
 
 router.post("/products");
 // rating
+module.exports = router;

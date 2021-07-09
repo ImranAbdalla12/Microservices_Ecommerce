@@ -9,7 +9,6 @@ const UserCreatedListener = require("./events/productListener");
 //Load Config
 dotenv.config({ path: "./config/config.env" });
 
-new UserCreatedListener("user:created", "user-srv").listen();
 //db connecnt
 connectDB();
 const app = express();

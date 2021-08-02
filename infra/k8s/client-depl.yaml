@@ -30,6 +30,6 @@
 #   ports: 
 #     - name: client
 #       protocol: TCP
-#       port: 3979
-#       targetPort: 3979
+#       port: 3100
+#       targetPort: 3100
 

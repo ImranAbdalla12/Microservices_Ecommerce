@@ -24,8 +24,16 @@ build:
         manual: 
           - src: './**/*.js'
             dest: .
+    - image: imran6099/user
+      context: user-srv
+      docker:
+        dockerfile: Dockerfile 
+      sync: 
+        manual: 
+          - src: './**/*.js'
+            dest: .
     # - image: imran6099/client
-    #   context: client/full_version_JS
+    #   context: client/
     #   docker:
     #     dockerfile: Dockerfile 
     #   sync: 

@@ -1,5 +1,5 @@
 var admin = require("../firebase/");
-const User = require("../models/userModel");
+const User = require("../models/user");
 
 exports.authCheck = async (req, res, next) => {
   let auth = req.headers.authorization;

@@ -1,4 +1,0 @@
-export const LOGGED_IN_USER = 'AUTH_SUCCESS';
-export const AUTH_FAIL = 'AUTH_FAIL';
-export const AUTH_SUCCESS = 'LOGGED_IN_USER';
-export const USER_PROFILE_UPDATE = 'USER_PROFILE_UPDATE';

@@ -13,7 +13,8 @@
 #         app: client
 #     spec:
 #       containers:
-#       - name: client
+#       - stdin: true
+#         name: client
 #         image: imran6099/client
 #         resources:
 #           limits:

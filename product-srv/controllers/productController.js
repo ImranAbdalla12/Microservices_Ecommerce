@@ -1,12 +1,18 @@
 const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const slugify = require("slugify");
+const ProductCreatedPublisher = require("../events/productPublisher")
+const ProductUpdatedPublisher = require("../events/productPublisher")
+const ProductRemovedPublisher = require("../events/productPublisher")
 
 exports.create = async (req, res) => {
   try {
     console.log(req.body);
     req.body.slug = slugify(req.body.title);
     const newProduct = await new Product(req.body).save();
+    new ProductCreatedPublisher('product:created').publish(
+      JSON.stringify(newProduct)
+    )
     res.json(newProduct);
   } catch (err) {
     console.log(err);
@@ -32,6 +38,9 @@ exports.remove = async (req, res) => {
     const deleted = await Product.findOneAndRemove({
       slug: req.params.slug,
     }).exec();
+    new ProductRemovedPublisher('product:removed').publish(
+      JSON.stringify(deleted)
+    )
     res.json(deleted);
   } catch (err) {
     console.log(err);
@@ -57,6 +66,9 @@ exports.update = async (req, res) => {
       req.body,
       { new: true }
     ).exec();
+    new ProductUpdatedPublisher('product:updated').publish(
+      JSON.stringify(updated)
+    )
     res.json(updated);
   } catch (err) {
     console.log("PRODUCT UPDATE ERROR ----> ", err);
@@ -66,6 +78,24 @@ exports.update = async (req, res) => {
     });
   }
 };
+
+// WITHOUT PAGINATION
+// exports.list = async (req, res) => {
+//   try {
+//     // createdAt/updatedAt, desc/asc, 3
+//     const { sort, order, limit } = req.body;
+//     const products = await Product.find({})
+//       .populate("category")
+//       .populate("subs")
+//       .sort([[sort, order]])
+//       .limit(limit)
+//       .exec();
+
+//     res.json(products);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 // WITH PAGINATION
 exports.list = async (req, res) => {
@@ -260,8 +290,16 @@ const handleBrand = async (req, res, brand) => {
 };
 
 exports.searchFilters = async (req, res) => {
-  const { query, price, category, stars, sub, shipping, color, brand } =
-    req.body;
+  const {
+    query,
+    price,
+    category,
+    stars,
+    sub,
+    shipping,
+    color,
+    brand,
+  } = req.body;
 
   if (query) {
     console.log("query --->", query);

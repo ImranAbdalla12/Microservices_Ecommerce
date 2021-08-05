@@ -8,14 +8,6 @@ build:
   local: 
     push: false
   artifacts: 
-    - image: imran6099/auth
-      context: auth
-      docker:
-        dockerfile: Dockerfile 
-      sync: 
-        manual: 
-          - src: './**/*.js'
-            dest: .
     - image: imran6099/product
       context: product-srv
       docker:
@@ -32,11 +24,11 @@ build:
         manual: 
           - src: './**/*.js'
             dest: .
-    # - image: imran6099/client
-    #   context: client/
-    #   docker:
-    #     dockerfile: Dockerfile 
-    #   sync: 
-    #     manual: 
-    #       - src: '**/*.js'
-    #         dest: .
+    - image: imran6099/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile 
+      sync: 
+        manual: 
+          - src: './**/*.js'
+            dest: .

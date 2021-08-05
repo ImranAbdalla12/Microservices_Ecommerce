@@ -31,3 +31,9 @@ module.exports = class UserCreatedPublisher extends Publisher {
     super(subject, data);
   }
 };
+
+module.exports = class UserUpdatedPublisher extends Publisher {
+  constructor(subject, data) {
+    super(subject, data);
+  }
+};

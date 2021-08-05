@@ -1,8 +1,10 @@
 import axios from "axios";
 
+
+const userAPI = "http://localhost:4002/api"
 export const userCart = async (cart, authtoken) =>
   await axios.post(
-    `${process.env.REACT_APP_API}/user/cart`,
+    `${userAPI}/user/cart`,
     { cart },
     {
       headers: {
@@ -12,14 +14,14 @@ export const userCart = async (cart, authtoken) =>
   );
 
 export const getUserCart = async (authtoken) =>
-  await axios.get(`${process.env.REACT_APP_API}/user/cart`, {
+  await axios.get(`${userAPI}/user/cart`, {
     headers: {
       authtoken,
     },
   });
 
 export const emptyUserCart = async (authtoken) =>
-  await axios.delete(`${process.env.REACT_APP_API}/user/cart`, {
+  await axios.delete(`${userAPI}/user/cart`, {
     headers: {
       authtoken,
     },
@@ -27,7 +29,7 @@ export const emptyUserCart = async (authtoken) =>
 
 export const saveUserAddress = async (authtoken, address) =>
   await axios.post(
-    `${process.env.REACT_APP_API}/user/address`,
+    `${userAPI}/user/address`,
     { address },
     {
       headers: {
@@ -38,7 +40,7 @@ export const saveUserAddress = async (authtoken, address) =>
 
 export const applyCoupon = async (authtoken, coupon) =>
   await axios.post(
-    `${process.env.REACT_APP_API}/user/cart/coupon`,
+    `${userAPI}/user/cart/coupon`,
     { coupon },
     {
       headers: {
@@ -49,7 +51,7 @@ export const applyCoupon = async (authtoken, coupon) =>
 
 export const createOrder = async (stripeResponse, authtoken) =>
   await axios.post(
-    `${process.env.REACT_APP_API}/user/order`,
+    `${userAPI}/user/order`,
     { stripeResponse },
     {
       headers: {
@@ -59,14 +61,14 @@ export const createOrder = async (stripeResponse, authtoken) =>
   );
 
 export const getUserOrders = async (authtoken) =>
-  await axios.get(`${process.env.REACT_APP_API}/user/orders`, {
+  await axios.get(`${userAPI}/user/orders`, {
     headers: {
       authtoken,
     },
   });
 
 export const getWishlist = async (authtoken) =>
-  await axios.get(`${process.env.REACT_APP_API}/user/wishlist`, {
+  await axios.get(`${userAPI}/user/wishlist`, {
     headers: {
       authtoken,
     },
@@ -74,7 +76,7 @@ export const getWishlist = async (authtoken) =>
 
 export const removeWishlist = async (productId, authtoken) =>
   await axios.put(
-    `${process.env.REACT_APP_API}/user/wishlist/${productId}`,
+    `${userAPI}/user/wishlist/${productId}`,
     {},
     {
       headers: {
@@ -85,7 +87,7 @@ export const removeWishlist = async (productId, authtoken) =>
 
 export const addToWishlist = async (productId, authtoken) =>
   await axios.post(
-    `${process.env.REACT_APP_API}/user/wishlist`,
+    `${userAPI}/user/wishlist`,
     { productId },
     {
       headers: {
@@ -100,7 +102,7 @@ export const createCashOrderForUser = async (
   couponTrueOrFalse
 ) =>
   await axios.post(
-    `${process.env.REACT_APP_API}/user/cash-order`,
+    `${userAPI}/user/cash-order`,
     { couponApplied: couponTrueOrFalse, COD },
     {
       headers: {

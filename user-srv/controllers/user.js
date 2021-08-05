@@ -241,3 +241,56 @@ exports.createCashOrder = async (req, res) => {
   console.log("NEW ORDER SAVED", newOrder);
   res.json({ ok: true });
 };
+
+// Admin 
+exports.adminOrders = async (req, res) => {
+  let allOrders = await Order.find({})
+    .sort("-createdAt")
+    .populate("products.product")
+    .exec();
+
+  res.json(allOrders);
+};
+
+exports.orderStatus = async (req, res) => {
+  // console.log(req.body);
+  // return;
+  const { orderId, orderStatus } = req.body;
+
+  let updated = await Order.findByIdAndUpdate(
+    orderId,
+    { orderStatus },
+    { new: true }
+  ).exec();
+
+  res.json(updated);
+};
+
+// create, remove, list
+
+exports.createCoupon = async (req, res) => {
+  try {
+    // console.log(req.body);
+    // return;
+    const { name, expiry, discount } = req.body.coupon;
+    res.json(await new Coupon({ name, expiry, discount }).save());
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.removeCoupon = async (req, res) => {
+  try {
+    res.json(await Coupon.findByIdAndDelete(req.params.couponId).exec());
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.listCoupon = async (req, res) => {
+  try {
+    res.json(await Coupon.find({}).sort({ createdAt: -1 }).exec());
+  } catch (err) {
+    console.log(err);
+  }
+};

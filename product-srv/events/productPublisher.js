@@ -25,8 +25,17 @@ class Publisher {
     });
   }
 }
-
 module.exports = class ProductCreatedPublisher extends Publisher {
+  constructor(subject, data) {
+    super(subject, data);
+  }
+};
+module.exports = class ProductUpdatedPublisher extends Publisher {
+  constructor(subject, data) {
+    super(subject, data);
+  }
+};
+module.exports = class ProductRemovedPublisher extends Publisher {
   constructor(subject, data) {
     super(subject, data);
   }

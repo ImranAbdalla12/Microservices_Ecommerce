@@ -51,10 +51,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       enum: ["Yes", "No"],
     },
-    ml: {
-      type: Number,
-      default: 50,
-    },
     brand: {
       type: String,
     },

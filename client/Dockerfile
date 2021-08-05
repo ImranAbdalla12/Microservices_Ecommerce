@@ -1,6 +1,6 @@
 FROM node:alpine
-WORKDIR /src
+WORKDIR /
 COPY package*.json ./
 RUN npm install --silent
 COPY . .
-CMD ["npm ","start"];
+CMD ["npm","start"];

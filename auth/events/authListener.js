@@ -1,14 +1,16 @@
 const nats = require("node-nats-streaming");
-const stan = nats.connect("nice", "product-srv-listener", {
+const { randomBytes } = require("crypto");
+const stan = nats.connect("nice", "auth-listener-123", {
   url: "http://nats-srv:4222",
 });
-
-const User = require("../models/userModel");
-
+const Product = require("../models/productModel");
 stan.on("connect", () => {
   console.log("Listener connected to NATS!");
-  new UserCreatedListener("user:created", "product-group").listen();
-  new UserupdatedListener('user:updated', 'product-group').listen()
+  new productCreatedListener("product:created", "auth-group").listen();
+  new productUpdatedListener("product:updated", "auth-group").listen();
+  new productCreatedListener('product:created', 'auth-group').listen()
+  new productUpdatedListener('product:updated', 'auth-group').listen()
+  new productRemovedListener('product:removed', 'auth-group').listen()
   stan.on("close", () => {
     console.log("NATS connection closed");
     process.exit();
@@ -60,55 +62,68 @@ class Listener {
   }
 }
 
-class UserCreatedListener extends Listener {
+class productCreatedListener extends Listener {
   constructor(subject, queueGroupName) {
     super(subject, queueGroupName);
   }
   async onMessage(data, msg) {
-    console.log("Received Event User Created ===========", data);
-    const { _id, name, email, role } = data;
+    console.log("Product Created ========", data);
+    const { _id, title, price, images } = data;
     try {
-     await new User({
-        email,
-        name,
-        role,
+      const newProduct = await new Product({
         _id,
+        title,
+        price,
+        images,
       }).save();
+      console.log("Product CREATED", newProduct);
       msg.ack();
     } catch (error) {
       throw new Error(error);
     }
   }
 }
-class UserupdatedListener extends Listener {
+class productUpdatedListener extends Listener {
   constructor(subject, queueGroupName) {
     super(subject, queueGroupName);
   }
   async onMessage(data, msg) {
-    console.log("Received Event User Updated ==============", data)
-    const { _id, name, email, role } = data;
+    console.log("Product Updated =========", data);
+    const { _id, title, price, images } = data;
     try {
-      const updatedUser = await User.findOneAndUpdate(
-        { email },
-        { _id, name, role  },
+      const updatedProduct = await Product.findOneAndUpdate(
+        { _id },
+        {
+          _id,
+          title,
+          price,
+          images,
+        },
         { new: true }
       );
-      if (updatedUser) {
-        console.log("User Updated", updatedUser);
-      } else {
-        const newUser = await new User({
-          _id,
-          role,
-          email,
-          name: email.split("@")[0],
-        }).save();
-        console.log("DID NOT FOUND USER TO UDPATE, USER CREATED ============", newUser);
-      }
+      console.log("Product UPDATED", updatedProduct);
       msg.ack();
     } catch (error) {
       throw new Error(error);
     }
   }
 }
+class productRemovedListener extends Listener {
+  constructor(subject, queueGroupName) {
+    super(subject, queueGroupName);
+  }
+  async onMessage(data, msg) {
+    console.log("Received Product Delete =========", data);
+    const { _id, title, price, images } = data;
+    try {
+      const removedProduct = await Product.findOneAndRemove({ _id }).exec();
+      console.log("Product REMOVED", removedProduct);
+      msg.ack();
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+}
+
 process.on("SIGINT", () => stan.close());
 process.on("SIGTERM", () => stan.close());
